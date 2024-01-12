@@ -133,9 +133,9 @@ function result(){
   let cnt = 0;
   detail.forEach((item) => {
     const table = document.getElementById(`rt${cnt + 1}`);
-    table.querySelector('#c').innerText = item['cname'];
-    table.querySelector('#s').innerText = `${item['sub']}${unit}<br>${item['ans']}${unit}`;
-    table.querySelector('#p').innerText = `${item['point']} pts.`;
+    table.querySelector('#c').innerHTML = item['cname'];
+    table.querySelector('#s').innerHTML = `${item['sub']}${unit}<br>${item['ans']}${unit}`;
+    table.querySelector('#p').innerHTML = `${item['point']} pts.`;
     cnt++;
   });
 
