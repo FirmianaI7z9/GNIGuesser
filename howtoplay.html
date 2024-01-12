@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  <title>GNIGuesser</title>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <link rel="stylesheet" href="css/style.css"/>
+  <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+
+<body>
+  <h1>GNIGuesser</h1>
+  <h2>遊び方</h2>
+  <a href="index.html">ホームに戻る</a>
+
+  <h3>モード</h3>
+  <p>
+    本ゲームには2つのモード、「GNI」と「一人当たりGNI」があります。
+  </p>
+
+  <h3>基本操作</h3>
+  <p>
+    「『GNI』をプレイ」または「『一人当たりGNI』をプレイ」を押すとゲームが始まります。<br>
+    最初にプレイヤー名を10文字以内(日本語可)で入力して、「はじめる！」を押下します。なお、プレイヤー名はブラウザに保存されるので再度入力する必要はありません。<br>
+    5問連続で出題され、入力欄に表示される国のGNIか一人当たりGNIを解答するだけです。<br>
+    (注：何も入力していなくても「Guess!」を押すと進行します)<br>
+    各問題 \(5000\)点\(+\alpha\) で計算し、5問の合計点で競います。
+  </p>
+
+  <h3>得点の計算方法</h3>
+  <p>
+    正しい答えを \(A\)、プレイヤーの解答を \(X\) とすると、得点 \(S\) は以下のように決定されます。
+  </p>
+  <ol>
+    <li>
+      \(X=A\) の場合、\(S=5001\)
+    </li>
+    <li>
+      \(|X-A| \leq [A/10]\) の場合、\(S=5000\)
+    </li>
+    <li>
+      \(0 \leq X \lt A - [A/10]\) の場合、\(S=5000 \times \left(\dfrac{X}{A-[A/10]}\right)^2\)
+    </li>
+    <li>
+      \(A + A/10 \lt X \lt 10A\) の場合、\(S=5000 \times \left(\dfrac{10A - X}{9A-[A/10]}\right)^2\)
+    </li>
+    <li>
+      以上に該当しない場合、\(S=0\)
+    </li>
+  </ol>
+
+  <p class="copyright">©2024 FirmianaI7z9</p>
+</body>
+
+</html>
