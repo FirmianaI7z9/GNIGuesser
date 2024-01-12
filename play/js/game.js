@@ -42,6 +42,8 @@ window.onload = function() {
 }
 
 function start_game(k) {
+  if (document.getElementById('username').value == "") return;
+
   kind = k;
   localStorage.setItem('username', document.getElementById('username').value);
   
