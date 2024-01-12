@@ -121,12 +121,20 @@ function result(){
   else if (score >= 25000) document.getElementById('rtitle').innerHTML = "称号 <b>- 達人 -</b>";
   else document.getElementById('rtitle').innerHTML = "";
 
+  var unit = "";
+  switch (kind) {
+    case 'gni':
+      unit = '万ドル';
+      break;
+    case 'gnipercap':
+      unit = 'ドル';
+      break;
+  }
   let cnt = 0;
   detail.forEach((item) => {
     const table = document.getElementById(`rt${cnt + 1}`);
     table.querySelector('#c').innerText = item['cname'];
-    table.querySelector('#s').innerText = `\$${item['sub']}`;
-    table.querySelector('#a').innerText = `\$${item['ans']}`;
+    table.querySelector('#s').innerText = `${item['sub']}${unit}<br>${item['ans']}${unit}`;
     table.querySelector('#p').innerText = `${item['point']} pts.`;
     cnt++;
   });
