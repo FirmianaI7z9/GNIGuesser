@@ -57,7 +57,7 @@ function start_game(k, n) {
   function load_file() {
     const promise = new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open('GET', `data/${kind}.text`);
+      xhr.open('GET', `data/${kind}.txt`);
       xhr.addEventListener('load', (f) => resolve(xhr));
       xhr.send();
     });
@@ -66,6 +66,7 @@ function start_game(k, n) {
 
   load_file().then((xhr) => {
     var arr = xhr.response.split('\r\n');
+    console.log(arr);
     arr.forEach((item) => {
       item = item.split('\t');
       data.push({jp: item[0], value:item[1]});

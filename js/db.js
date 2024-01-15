@@ -8,25 +8,6 @@ const firebaseConfig = {
   measurementId: "G-TR2SEZN0N3"
 };
 
-const getData = async(e) => {
-  var ret = [];
-  let rURL = `data/${e}.text`;
-  let r = new XMLHttpRequest();
-  r.open('GET', rURL);
-  r.responseType = 'json';
-  r.send();
-  r.onload = function() {
-    d = r.response;
-    console.log(d);
-    var arr = d.split('\n');
-    arr.forEach((item) => {
-      item = item.split('\t');
-      ret.push({jp: item[0], value: item[1]});
-    });
-    return ret;
-  }
-}
-
 const getRank = async(e) => {
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
