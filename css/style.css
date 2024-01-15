@@ -12,7 +12,7 @@ h2,p{margin:10px 0;}
 .copyright{font-size:70%;text-align:center;color:#888;}
 
 .play_container{min-height:500px;border:solid 1px #aaa;border-radius:5px;height:fit-content;}
-.play_container p{text-align:center;}
+.play_container p{text-align:center;pointer-events:none;}
 .play_container .main_button{margin:15px auto!important;}
 .input_container{text-align:center;}
 .username_field{margin:5px auto!important;width:300px;font-size:18px;}
