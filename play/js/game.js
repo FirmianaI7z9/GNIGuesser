@@ -65,10 +65,10 @@ function start_game(k, n) {
   }
 
   load_file().then((xhr) => {
-    var arr = xhr.response.replace('\r','').split('\n');
+    var arr = xhr.response.split('/');
     console.log(arr);
     arr.forEach((item) => {
-      item = item.split('\t');
+      item = item.split(' ');
       data.push({jp: item[0], value:item[1]});
       data = shuffleArr(data);
 
