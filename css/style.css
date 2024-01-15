@@ -2,6 +2,7 @@ body{width:95%;margin:0 auto;font-family:sans-serif;-webkit-text-size-adjust:100
 
 h1{background-color:#000;color:#fff;padding:10px 20px;border-radius:5px;}
 h2,p{margin:10px 0;}
+.bo{overflow:hidden;}
 
 .main_button_container{display:flex;flex-wrap:wrap;margin:10px auto;width:100%;justify-content:center;}
 .main_button{position:relative;width:30%;height:80px;min-width:320px!important;border:solid 1px #444;border-radius:5px;margin:5px;}
