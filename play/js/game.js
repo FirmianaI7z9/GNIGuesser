@@ -171,14 +171,13 @@ function result(){
       if (score < item.score) cnt++;
     });
 
-    document.getElementById('rrank').innerHTML = `<b>${Math.min(cnt + 1, 21)} 位${cnt >= 20 ? "以下" : ""}</b>`;
+    document.getElementById('rrank').innerHTML = `<b>${Math.min(cnt, 21)} 位${cnt > 20 ? "以下" : ""}</b>`;
 
-    if (cnt < 20) {
+    if (cnt <= 20) {
       let isFirst = true;
       rank.forEach((item) => {
-        console.log(item);
         if (localStorage.getItem('username') == item.name) {
-          if(score > item.score) {
+          if (score > item.score) {
             updateRank({kind: `${kind}_${mqnum}`, score: score, time: Date.now(), id: item.id});
           }
           isFirst = false;

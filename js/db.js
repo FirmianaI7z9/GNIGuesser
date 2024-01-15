@@ -76,7 +76,7 @@ function resetRank(e){
   });
 
   return;
-}
+}*/
 
 function adjustRank(e){
   firebase.initializeApp(firebaseConfig);
@@ -84,7 +84,7 @@ function adjustRank(e){
 
   var name_list = [];
 
-  db.collection("result_" + e).get().then((querySnapshot) => {
+  db.collection("result_" + e).orderBy('score', 'desc').get().then((querySnapshot) => {
     querySnapshot.forEach((doc) => {
       if (name_list.some(value => value == doc.data().name) == true) {
         db.collection("result_" + e).doc(doc.id).delete();
@@ -96,4 +96,4 @@ function adjustRank(e){
   });
 
   return;
-}*/
+}
