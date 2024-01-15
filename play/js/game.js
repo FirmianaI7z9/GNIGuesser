@@ -164,7 +164,6 @@ function result(){
 
   const wait_get_place = (async() => {
     var rank = await getRank(`${kind}_${mqnum}`);
-    console.log(rank);
 
     let cnt = 1;
     rank.forEach((item) => {
