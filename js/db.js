@@ -20,7 +20,7 @@ const getRank = async(e) => {
       if (cnt < 20) {
         var d = doc.data();
         d['id'] = doc.id;
-        ret.push(doc.data());
+        ret.push(d);
         cnt++;
       }
       else {
