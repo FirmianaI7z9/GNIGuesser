@@ -66,7 +66,6 @@ function start_game(k, n) {
 
   load_file().then((xhr) => {
     var arr = xhr.response.split('/');
-    console.log(arr);
     arr.forEach((item) => {
       item = item.split(' ');
       data.push({jp: item[0], value:item[1]});
@@ -164,7 +163,7 @@ function result(){
   });
 
   const wait_get_place = (async() => {
-    const res = await getPlace({kind: kind, value: score});
+    const res = await getPlace({kind: `${kind}_${mqnum}`, value: score});
 
     document.getElementById('rrank').innerHTML = `<b>${Math.min(res + 1, 21)} 位${res >= 20 ? "以下" : ""}</b>`;
 
