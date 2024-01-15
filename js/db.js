@@ -18,6 +18,8 @@ const getRank = async(e) => {
     let cnt = 0;
     querySnapshot.forEach((doc) => {
       if (cnt < 20) {
+        var d = doc.data();
+        d['id'] = doc.id;
         ret.push(doc.data());
         cnt++;
       }
@@ -29,13 +31,15 @@ const getRank = async(e) => {
   });
 }
 
-const getPlace = async(e) => {
+function updateRank(e){
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  return db.collection("result_" + e.kind).orderBy('score', 'asc').startAfter(e.value).get().then((querySnapshot) => {
-    return querySnapshot.size;
+  db.collection("result_" + e.kind).doc(e.id).update({
+    score: e.score, time: e.time
   });
+
+  return;
 }
 
 function setRank(e){
@@ -59,3 +63,37 @@ function setData(e){
 
   return;
 }
+
+/*
+function resetRank(e){
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  db.collection("result_" + e).get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      db.collection("result_" + e).doc(doc.id).delete();
+    });
+  });
+
+  return;
+}
+
+function adjustRank(e){
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  var name_list = [];
+
+  db.collection("result_" + e).get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      if (name_list.some(value => value == doc.data().name) == true) {
+        db.collection("result_" + e).doc(doc.id).delete();
+      }
+      else {
+        name_list.push(doc.data().name);
+      }
+    });
+  });
+
+  return;
+}*/

@@ -163,11 +163,32 @@ function result(){
   });
 
   const wait_get_place = (async() => {
-    const res = await getPlace({kind: `${kind}_${mqnum}`, value: score});
+    var rank = await getRank(`${kind}_${mqnum}`);
+    console.log(rank);
 
-    document.getElementById('rrank').innerHTML = `<b>${Math.min(res + 1, 21)} 位${res >= 20 ? "以下" : ""}</b>`;
+    let cnt = 1;
+    rank.forEach((item) => {
+      if (score < item.score) cnt++;
+    });
 
-    if (res < 20) setRank({kind: `${kind}_${mqnum}`, name: localStorage.getItem('username'), score: score, time: Date.now()});
+    document.getElementById('rrank').innerHTML = `<b>${Math.min(cnt + 1, 21)} 位${cnt >= 20 ? "以下" : ""}</b>`;
+
+    if (cnt < 20) {
+      let isFirst = true;
+      rank.forEach((item) => {
+        console.log(item);
+        if (localStorage.getItem('username') == item.name) {
+          if(score > item.score) {
+            updateRank({kind: `${kind}_${mqnum}`, score: score, time: Date.now(), id: item.id});
+          }
+          isFirst = false;
+        }
+      });
+
+      if (isFirst == true) {
+        setRank({kind: `${kind}_${mqnum}`, name: localStorage.getItem('username'), score: score, time: Date.now()});
+      }
+    }
 
     var pc1 = document.getElementById("pc1");
     var pc2 = document.getElementById("pc2");
