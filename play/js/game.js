@@ -9,6 +9,7 @@ const shuffleArr = (src) => {
   return dst;
 };
 
+var mqnum = 0;
 var qnum = 0;
 var score = 0;
 var data = [];
@@ -17,10 +18,12 @@ var detail = [];
 
 function unfield_change() {
   if (document.getElementById('username').value.length >= 1) {
-    document.getElementById('button_start').style = "";
+    document.getElementById('button_start1').style = "";
+    document.getElementById('button_start2').style = "";
   }
   else {
-    document.getElementById('button_start').style = "display:none;";
+    document.getElementsById('button_start1').style = "display:none;";
+    document.getElementsById('button_start2').style = "display:none;";
   }
 }
 
@@ -38,40 +41,55 @@ function set(){
 
 window.onload = function() {
   document.getElementById('username').value = localStorage.getItem('username');
-  if (localStorage.getItem('username') != "") document.getElementById('button_start').style = "";
+  if (localStorage.getItem('username') != "") {
+    document.getElementById('button_start1').style = "";
+    document.getElementById('button_start2').style = "";
+  }
 }
 
-function start_game(k) {
+function start_game(k, n) {
   if (document.getElementById('username').value == "") return;
 
+  mqnum = n;
   kind = k;
   localStorage.setItem('username', document.getElementById('username').value);
   
-  const wait_start_game = (async() => {
-    const res = await getData();
-    data = res;
-    data = shuffleArr(data);
+  function load_file() {
+    const promise = new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', `data/${kind}.text`);
+      xhr.addEventListener('load', (f) => resolve(xhr));
+      xhr.send();
+    });
+    return promise;
+  }
 
-    var pc0 = document.getElementById("pc0");
-    var pc1 = document.getElementById("pc1");
-    pc0.style = "display:none";
-    pc1.style = "";
+  load_file().then((xhr) => {
+    var arr = xhr.response.split('\r\n');
+    arr.forEach((item) => {
+      item = item.split('\t');
+      data.push({jp: item[0], value:item[1]});
+      data = shuffleArr(data);
 
-    set_Q();
-  })();
+      var pc0 = document.getElementById("pc0");
+      var pc1 = document.getElementById("pc1");
+      pc0.style = "display:none";
+      pc1.style = "";
   
-  wait_start_game;
+      set_Q();
+    });
+  });
 }
 
 function set_Q() {
-  if (qnum == 5) {
+  if (qnum == mqnum) {
     result();
     return;
   }
 
-  var cname = data[qnum]['jp'];
+  var cname = data[qnum].jp;
 
-  document.getElementById('qnum').innerHTML = `第 ${qnum + 1} 問 (5問中)`;
+  document.getElementById('qnum').innerHTML = `第 ${qnum + 1} 問 (${mqnum}問中)`;
   document.getElementById('cscore').innerHTML = `現在のスコア : ${score} pts.`;
   document.getElementById('cname').innerHTML = `<b>${cname}</b>`;
   if (kind == 'gni') {
@@ -92,7 +110,7 @@ function judge(){
   if (kind == 'gni') submit = Number(document.getElementById('snum_0').value) * 100000000 + Number(document.getElementById('snum_1').value) * 10000 + Number(document.getElementById('snum_2').value);
   else if (kind == 'gnipercap') submit = Number(document.getElementById('snum').value);
 
-  var ans = data[qnum][kind];
+  var ans = data[qnum].value;
   if (kind == 'gni') document.getElementById('ans_val').innerHTML = 
     `正解 : <b>` + (ans >= 100000000 ? `${Math.floor(ans / 100000000)}兆` : "") 
       + (ans >= 10000 ? `${Math.floor(ans % 100000000 / 10000)}億` : "")
@@ -101,10 +119,10 @@ function judge(){
 
   var s = calc_score(submit, ans);
 
-  document.getElementById('score').innerHTML = `スコア : <span style="font-size:30px;color:red;"><b>${s} pts.</b></span>`;
+  text_cntup(document.getElementById('score'), 0, s, 1, 'スコア : <span style="font-size:30px;color:red;"><b>', ' pts.</b></span>');
   score += s;
 
-  detail.push({cname: data[qnum]['jp'], sub: submit, ans: ans, point: s});
+  detail.push({cname: data[qnum].jp, sub: submit, ans: ans, point: s});
 
   document.getElementById('answer_field').style = "";
   document.getElementById('button_next').style = "";
@@ -118,9 +136,9 @@ function next_game(){
 
 function result(){
   document.getElementById('rname').innerHTML = `<b>${localStorage.getItem('username')}</b> さんの総スコア`;
-  document.getElementById('rscore').innerHTML = `<b>${score} pts.</b>`;
-  if (score == 25005) document.getElementById('rtitle').innerHTML = "称号 <b>- 完全制覇 -</b>";
-  else if (score >= 25000) document.getElementById('rtitle').innerHTML = "称号 <b>- 達人 -</b>";
+  text_cntup(document.getElementById('rscore'), 0, score, 3, '<b>', ' pts.</b>');
+  if (score == mqnum * 5001) document.getElementById('rtitle').innerHTML = "称号 <b>- 完全制覇 -</b>";
+  else if (score >= mqnum * 5000) document.getElementById('rtitle').innerHTML = "称号 <b>- 達人 -</b>";
   else document.getElementById('rtitle').innerHTML = "";
 
   var unit = "";
@@ -133,20 +151,23 @@ function result(){
       break;
   }
   let cnt = 0;
+  const table = document.getElementById("rt");
   detail.forEach((item) => {
-    const table = document.getElementById(`rt${cnt + 1}`);
-    table.querySelector('#c').innerHTML = item['cname'];
-    table.querySelector('#s').innerHTML = `${item['sub']}${unit}<br>${item['ans']}${unit}`;
-    table.querySelector('#p').innerHTML = `${item['point']} pts.`;
+    var clone = table.cloneNode(true);
+    clone.querySelector('#c').innerHTML = item['cname'];
+    clone.querySelector('#s').innerHTML = `${item['sub']}${unit}<br><span style="color:#f00">${item['ans']}${unit}</span>`;
+    clone.querySelector('#p').innerHTML = `${item['point']} pts.`;
+    clone.style = "";
+    table.parentNode.appendChild(clone);
     cnt++;
   });
 
   const wait_get_place = (async() => {
     const res = await getPlace({kind: kind, value: score});
 
-    document.getElementById('rrank').innerHTML = `<b>${res + 1} 位</b>`;
+    document.getElementById('rrank').innerHTML = `<b>${Math.min(res + 1, 21)} 位${res >= 20 ? "以下" : ""}</b>`;
 
-    setRank({kind: kind, name: localStorage.getItem('username'), score: score, time: Date.now()});
+    if (res < 20) setRank({kind: `${kind}_${mqnum}`, name: localStorage.getItem('username'), score: score, time: Date.now()});
 
     var pc1 = document.getElementById("pc1");
     var pc2 = document.getElementById("pc2");
@@ -162,6 +183,35 @@ function calc_score(s, a) {
   else if (Math.abs(a - s) <= Math.floor(a / 10)) return 5000;
   else if (s < 0) return 0;
   else if (s < a) return Math.floor(5000 * Math.pow(s / (a - Math.floor(a / 10)), 2));
-  else if (s <= a * 10) return Math.floor(5000 * Math.pow((a * 10 - s) / (a * 9 - Math.floor(a / 10)), 2));
+  else if (s <= a * 5) return Math.floor(5000 * Math.pow((a * 5 - s) / (a * 4 - Math.floor(a / 10)), 2));
   else return 0;
+}
+
+function text_cntup(text, from, to, duration, prefix, suffix) {
+  var max = Math.floor(duration * 60);
+  var max_inv = 1 / max / max;
+  function f(x) {
+    return Math.floor((from - to) * max_inv * Math.pow(x - max, 2) + to);
+  };
+
+  text.innerHTML = prefix + `${from}` + suffix;
+
+  for (let i = 1; i <= max; i++) {
+    var x = f(i);
+    text.innerHTML = prefix + `${x}` + suffix;
+  }
+
+  var i = 1;
+  const cntup = setInterval(() => {
+    var x = f(i);
+    text.innerHTML = prefix + `${x}` + suffix;
+    i++;
+    if (i > max) {
+      clearInterval(cntup);
+    }
+  }, 50 / 3);
+
+  text.innerHTML = prefix + `${to}` + suffix;
+
+  return;
 }

@@ -13,7 +13,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
   </script>
-  <!--<script src="js/rank.js"></script>-->
+  <script src="js/rank.js"></script>
   <script src="../js/db.js"></script>
 </head>
 
@@ -24,22 +24,32 @@
 
   <div class="main_button_container">
     <div class="main_button">
-      <a onclick="displayRank('gni')"></a>
-      <p>GNI</p>
+      <a onclick="displayRank('gni_5')"></a>
+      <p>GNI(5)</p>
     </div>
     <div class="main_button">
-      <a onclick="displayRank('gnipercap')"></a>
-      <p>一人当たりGNI</p>
+      <a onclick="displayRank('gni_30')"></a>
+      <p>GNI(30)</p>
+    </div>
+    <div class="main_button">
+      <a onclick="displayRank('gnipercap_5')"></a>
+      <p>一人当たりGNI(5)</p>
+    </div>
+    <div class="main_button">
+      <a onclick="displayRank('gnipercap_30')"></a>
+      <p>一人当たりGNI(30)</p>
     </div>
   </div>
   
   <div class="rank_item" id="rank_item_default" style="display:none;">
-    <p class="rank_num">1</p>
+    <p class="rank_num"></p>
     <div class="rank_inner">
-      <p class="rank_name">ああああああああああ</p>
-      <p class="rank_score">25005 pts.</p>
+      <p class="rank_name"></p>
+      <p class="rank_score"></p>
     </div>
   </div>
+
+  <p style="text-align:center;">サーバーアクセスのリソースがほぼ無いに等しいため、更新連打はしないでください。サ終しますよ。</p>
 
   <h2 id="rank_title" style="text-align:center;">「GNI」スコアランキング</h2>
   <div id="rank_container">

@@ -1,12 +1,14 @@
 window.onload = function() {
-  displayRank('gni');
+  displayRank('gni_5');
 }
+
+var rank_save = {};
 
 function displayRank(kind) {
   const item = document.getElementById('rank_item_default');
   var ele = document.getElementById('rank_container');
   let title = "";
-  switch (kind) {
+  switch (kind.split('_')[0]) {
     case 'gni':
       title = 'GNI';
       break;
@@ -14,6 +16,7 @@ function displayRank(kind) {
       title = '一人当たりGNI';
       break;
   }
+  title = title + `(${kind.split('_')[1]}問版)`;
   document.getElementById('rank_title').innerHTML = `「${title}」スコアランキング`;
   var clone = ele.cloneNode(false);
   ele.parentNode.replaceChild(clone, ele);
@@ -21,8 +24,10 @@ function displayRank(kind) {
 
   let cnt = 1;
   const wait_get_rank = (async() => {
-    const res = await getRank(kind);
-    res.forEach((doc) => {
+    if (rank_save[kind] == null) {
+      rank_save[kind] = await getRank(kind);
+    }
+    rank_save[kind].forEach((doc) => {
       var i = item.cloneNode(true);
       i.style = "";
       if (cnt <= 3) i.className = `rank_item rank_${cnt}`;

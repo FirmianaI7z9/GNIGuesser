@@ -8,18 +8,23 @@ const firebaseConfig = {
   measurementId: "G-TR2SEZN0N3"
 };
 
-const getData = async() => {
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-
+const getData = async(e) => {
   var ret = [];
-
-  return db.collection("gni_data").get().then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-      ret.push(doc.data());
+  let rURL = `data/${e}.text`;
+  let r = new XMLHttpRequest();
+  r.open('GET', rURL);
+  r.responseType = 'json';
+  r.send();
+  r.onload = function() {
+    d = r.response;
+    console.log(d);
+    var arr = d.split('\n');
+    arr.forEach((item) => {
+      item = item.split('\t');
+      ret.push({jp: item[0], value: item[1]});
     });
     return ret;
-  });
+  }
 }
 
 const getRank = async(e) => {
@@ -28,9 +33,16 @@ const getRank = async(e) => {
 
   var ret = [];
 
-  return db.collection("result_" + e).orderBy('score', 'desc').limit(20).get().then((querySnapshot) => {
+  return db.collection("result_" + e).orderBy('score', 'desc').get().then((querySnapshot) => {
+    let cnt = 0;
     querySnapshot.forEach((doc) => {
-      ret.push(doc.data());
+      if (cnt < 20) {
+        ret.push(doc.data());
+        cnt++;
+      }
+      else {
+        doc.ref.delete();
+      }
     });
     return ret;
   });

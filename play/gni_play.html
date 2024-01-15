@@ -12,7 +12,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
   </script>
-  <!--<script src="js/game.js"></script>-->
+  <script src="js/game.js"></script>
   <script src="../js/db.js"></script>
 </head>
 
@@ -23,28 +23,27 @@
 
   <p>出典：<a href="https://unstats.un.org/unsd/snaama/Basic" target="_blank" rel="noopener noreferrer">UNStats Basic Data Selection</a>、統計年次：2022年</p>
 
-  <!--<textarea id="dataset" style="width:100%;height:200px;"></textarea>
-  <div class="main_button">
-    <a onclick="set()"></a>
-    <p>データセット</p>
-  </div>-->
-
   <div class="play_container" id="pc0">
     <p>プレイヤー名 (10文字以内、絵文字不可)</p>
     <div class="input_container">
       <input type="text" class="username_field" id="username" maxlength="10" minlength="1" onchange="unfield_change()"/>
     </div>
   
-    <div id="button_start" class="main_button" style="display:none;">
-      <a onclick="start_game('gni')"></a>
-      <p>はじめる!</p>
+    <div id="button_start1" class="main_button" style="display:none;">
+      <a onclick="start_game('gni', 5)"></a>
+      <p>はじめる!(全5問)</p>
+    </div>
+
+    <div id="button_start2" class="main_button" style="display:none;">
+      <a onclick="start_game('gni', 30)"></a>
+      <p>はじめる!(全30問)</p>
     </div>
   </div>
 
   <div class="play_container" id="pc1" style="display:none;">
-    <p id="qnum" style="font-size:20px;">第 N 問 (5問中)</p>
-    <p id="cscore" style="font-size:24px;">現在のスコア : 15003 pts.</p>
-    <p id="cname" style="font-size:28px;"><b>ボリビア</b></p>
+    <p id="qnum" style="font-size:20px;"></p>
+    <p id="cscore" style="font-size:24px;"></p>
+    <p id="cname" style="font-size:28px;"><b></b></p>
     <div class="input_container">
       <input type="text" class="snum_field" id="snum_0" maxlength="2" minlength="0" placeholder="0~99"/>
       <span style="font-size:20px;"><b>兆</b></span>
@@ -55,8 +54,8 @@
     </div>
 
     <div id="answer_field" class="answer_field">
-      <p id="ans_val" style="font-size:24px;color:red;">正解 : <b>4兆9999億9999万ドル</b></p>
-      <p id="score" style="font-size:24px;">スコア : <span style="font-size:30px;color:red;"><b>5001 pts.</b></span></p>
+      <p id="ans_val" style="font-size:24px;color:red;"></p>
+      <p id="score" style="font-size:24px;"></p>
     </div>
   
     <div id="button_submit" class="main_button">
@@ -72,11 +71,11 @@
   
   <div class="play_container" id="pc2" style="display:none;">
     <p style="font-size:20px;">最終結果</p>
-    <p id="rname" style="font-size:24px;"><b>Firmiana</b> さんの総スコア</p>
-    <p id="rscore" style="font-size:30px;"><b>25005 pts.</b></p>
-    <p id="rtitle" style="font-size:24px;">称号 <b>- 完全制覇 -</b></p>
+    <p id="rname" style="font-size:24px;"></p>
+    <p id="rscore" style="font-size:30px;"></p>
+    <p id="rtitle" style="font-size:24px;"></p>
     <p style="font-size:20px;">ランキング</p>
-    <p id="rrank" style="font-size:30px;color:red;"><b>1 位</b></p>
+    <p id="rrank" style="font-size:30px;color:red;"></p>
 
     <table style="width:50%;min-width:300px;margin:5px auto;">
       <thead>
@@ -87,41 +86,17 @@
         </tr>
       </thead>
       <tbody>
-        <tr id="rt1">
-          <th id="c">日本</th>
-          <th id="s">1ドル</th>
-          <th id="p">0 pts.</th>
-        </tr>
-        <tr id="rt2">
-          <th id="c">日本</th>
-          <th id="s">1ドル</th>
-          <th id="p">0 pts.</th>
-        </tr>
-        <tr id="rt3">
-          <th id="c">日本</th>
-          <th id="s">1ドル</th>
-          <th id="p">0 pts.</th>
-        </tr>
-        <tr id="rt4">
-          <th id="c">日本</th>
-          <th id="s">1ドル</th>
-          <th id="p">0 pts.</th>
-        </tr>
-        <tr id="rt5">
-          <th id="c">日本</th>
-          <th id="s">1ドル</th>
-          <th id="p">0 pts.</th>
+        <tr id="rt" style="display:none;">
+          <th id="c"></th>
+          <th id="s"></th>
+          <th id="p"></th>
         </tr>
       </tbody>
     </table>
   
-    <!--<div class="main_button" style="margin:15px auto;">
+    <div class="main_button" style="margin:15px auto;">
       <a href="gni_play.html"></a>
       <p>再チャレンジ</p>
-    </div>-->
-  
-    <div class="main_button" style="margin:15px auto;">
-      <p>都合により本日終了</p>
     </div>
 
     <div class="main_button" style="margin:15px auto;">
