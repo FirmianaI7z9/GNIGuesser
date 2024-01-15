@@ -97,8 +97,12 @@ function set_Q() {
     document.getElementById('snum_1').value = '';
     document.getElementById('snum_2').value = '';
   }
-  else {
+  else if (kind == 'gnipercap') {
     document.getElementById('snum').value = '';
+  }
+  else if (kind == 'population') {
+    document.getElementById('snum_0').value = '';
+    document.getElementById('snum_1').value = '';
   }
   document.getElementById('answer_field').style = "display:none;";
   document.getElementById('button_next').style = "display:none;";
@@ -109,6 +113,7 @@ function judge(){
   var submit = 0;
   if (kind == 'gni') submit = Number(document.getElementById('snum_0').value) * 100000000 + Number(document.getElementById('snum_1').value) * 10000 + Number(document.getElementById('snum_2').value);
   else if (kind == 'gnipercap') submit = Number(document.getElementById('snum').value);
+  else if (kind == 'population') submit = Number(document.getElementById('snum_0').value) * 10000 + Number(document.getElementById('snum_1').value);
 
   var ans = data[qnum].value;
   if (kind == 'gni') document.getElementById('ans_val').innerHTML = 
@@ -116,6 +121,9 @@ function judge(){
       + (ans >= 10000 ? `${Math.floor(ans % 100000000 / 10000)}億` : "")
       + `${ans % 10000}万ドル</b>`;
   else if (kind == 'gnipercap') document.getElementById('ans_val').innerHTML = `正解 : <b>${ans}ドル</b>`;
+  else if (kind == 'population') document.getElementById('ans_val').innerHTML =
+    `正解 : <b>` + (ans >= 10000 ? `${Math.floor(ans / 10000)}億` : "")
+      + `${ans % 10000}万人</b>`;
 
   var s = calc_score(submit, ans);
 
@@ -148,6 +156,9 @@ function result(){
       break;
     case 'gnipercap':
       unit = 'ドル';
+      break;
+    case 'population':
+      unit = '万人';
       break;
   }
   let cnt = 0;

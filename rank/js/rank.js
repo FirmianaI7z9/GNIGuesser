@@ -15,6 +15,9 @@ function displayRank(kind) {
     case 'gnipercap':
       title = '一人当たりGNI';
       break;
+    case 'population':
+      title = '人口';
+      break;
   }
   title = title + `(${kind.split('_')[1]}問版)`;
   document.getElementById('rank_title').innerHTML = `「${title}」スコアランキング`;
