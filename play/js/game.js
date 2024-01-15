@@ -65,7 +65,7 @@ function start_game(k, n) {
   }
 
   load_file().then((xhr) => {
-    var arr = xhr.response.split('\r\n');
+    var arr = xhr.response.replace('\r','').split('\n');
     console.log(arr);
     arr.forEach((item) => {
       item = item.split('\t');
