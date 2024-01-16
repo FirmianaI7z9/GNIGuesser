@@ -20,7 +20,7 @@ function displayRank(kind) {
       break;
   }
   title = title + `(${kind.split('_')[1]}問版)`;
-  document.getElementById('rank_title').innerHTML = `「${title}」スコアランキング`;
+  document.getElementById('rank_title').innerHTML = `「${title}」<span style="display:inline-block;">スコアランキング</span>`;
   var clone = ele.cloneNode(false);
   ele.parentNode.replaceChild(clone, ele);
   ele = clone;
@@ -37,7 +37,17 @@ function displayRank(kind) {
       i.querySelector('.rank_num').innerText = `${cnt}`;
       if (cnt <= 3) i.querySelector('.rank_num').className = `rank_num rank_${cnt}_text`;
       i.querySelector('.rank_inner').querySelector('.rank_name').innerText = doc['name'];
-      i.querySelector('.rank_inner').querySelector('.rank_score').innerText = doc['score'] + ' pts.';
+      if (doc['score'] == 5001 * Number(kind.split('_')[1])) {
+        i.querySelector('.rank_inner').querySelector('.rank_name').style = "color:#608;";
+        i.querySelector('.rank_inner').querySelector('.rank_score').style = "color:#608;";
+      }
+      else if (doc['score'] >= 5000 * Number(kind.split('_')[1])) {
+        i.querySelector('.rank_inner').querySelector('.rank_name').style = "color:#f00;";
+        i.querySelector('.rank_inner').querySelector('.rank_score').style = "color:#f00;";
+      }
+      i.querySelector('.rank_inner').querySelector('.rank_score').innerHTML = doc['score'] + ' pts.' +
+        (doc['score'] == 5001 * Number(kind.split('_')[1]) ? '<span class="title_tag" style="color:#fff;background-color:#608;">完全制覇</span>' : 
+        (doc['score'] >= 5000 * Number(kind.split('_')[1]) ? '<span class="title_tag" style="color:#fff;background-color:#f00;">達人</span>' : ""));
       ele.appendChild(i);
       cnt++;
     });

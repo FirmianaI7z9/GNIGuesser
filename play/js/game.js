@@ -15,6 +15,7 @@ var score = 0;
 var data = [];
 var kind = "";
 var detail = [];
+var position = 0;
 
 function unfield_change() {
   if (document.getElementById('username').value.length >= 1) {
@@ -52,7 +53,7 @@ function start_game(k, n) {
 
   mqnum = n;
   kind = k;
-  localStorage.setItem('username', document.getElementById('username').value);
+  localStorage.setItem('username', document.getElementById('username').value.replace(' ', ''));
   
   function load_file() {
     const promise = new Promise((resolve, reject) => {
@@ -114,6 +115,8 @@ function judge(){
   if (kind == 'gni') submit = Number(document.getElementById('snum_0').value) * 100000000 + Number(document.getElementById('snum_1').value) * 10000 + Number(document.getElementById('snum_2').value);
   else if (kind == 'gnipercap') submit = Number(document.getElementById('snum').value);
   else if (kind == 'population') submit = Number(document.getElementById('snum_0').value) * 10000 + Number(document.getElementById('snum_1').value);
+
+  if (submit == 0) return;
 
   var ans = data[qnum].value;
   if (kind == 'gni') document.getElementById('ans_val').innerHTML = 
@@ -182,6 +185,7 @@ function result(){
     });
 
     document.getElementById('rrank').innerHTML = `<b>${Math.min(cnt, 21)} 位${cnt > 20 ? "以下" : ""}</b>`;
+    position = cnt;
 
     if (cnt <= 20) {
       let isFirst = true;
@@ -239,9 +243,24 @@ function text_cntup(text, from, to, duration, prefix, suffix) {
     if (i > max) {
       clearInterval(cntup);
     }
-  }, 50 / 3);
+  }, 16);
 
   text.innerHTML = prefix + `${to}` + suffix;
 
   return;
+}
+
+function tweet() {
+  let kindjp = {gni: "GNI", gnipercap: "一人当たりGNI", population: "人口"};
+  let text = `${localStorage.getItem('username')} が「${kindjp[kind]} (${mqnum}問版)」で ${score} pts.を獲得！`;
+  
+  if (score == mqnum * 5001) text += "%0a称号 - 完全制覇 -";
+  else if (score >= mqnum * 5000) text += "%0a称号 - 達人 -";
+  if (position <= 20) text += `%0a(${position} 位相当)`;
+  else text += "%0a(ランキング圏外)";
+
+  let hashtags = "GNIGuesser";
+  let url = "https://firmianai7z9.github.io/GNIGuesser/index.html";
+
+  window.open("https://twitter.com/share?text=" + text + "&hashtags=" + hashtags + "&url=" + url);
 }

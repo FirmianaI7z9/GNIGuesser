@@ -5,7 +5,7 @@ h2,p{margin:10px 0;}
 .bo{overflow:hidden;}
 
 .main_button_container{display:flex;flex-wrap:wrap;margin:10px auto;width:100%;justify-content:center;}
-.main_button{position:relative;width:30%;height:80px;min-width:320px!important;border:solid 1px #444;border-radius:5px;margin:5px;}
+.main_button{position:relative;width:30%;height:60px;min-width:320px!important;border:solid 1px #444;border-radius:5px;margin:5px;}
 .main_button a{position:absolute;top:0;left:0;height:100%;width:100%;background-color:#00f0;}
 .main_button a:hover{background-color:#00f1;}
 .main_button p{position:absolute;margin:auto;font-size:22px;font-weight:600;text-align:center;width:300px;height:40px;top:0;right:0;bottom:0;left:0;pointer-events:none;}
@@ -20,14 +20,40 @@ h2,p{margin:10px 0;}
 .snum_field{margin:5px auto!important;width:90px;font-size:24px;text-align:right;}
 .wnum_field{margin:5px auto!important;width:240px;font-size:24px;text-align:right;}
 
-.rank_item{position:relative;width:30%;min-width:300px;height:100px;border:solid 1px #09f;background-color:#c9e9ff;border-radius:5px;margin:5px auto;}
+.rank_item{position:relative;width:30%;min-width:300px;height:80px;border:solid 1px #09f;background-color:#c9e9ff;border-radius:5px;margin:5px auto;}
 .rank_1{border:solid 1px #e4c900;background-color:#ffc;}
 .rank_2{border:solid 1px #696969;background-color:#eee;}
 .rank_3{border:solid 1px #ae5d00;background-color:#ffd7b0;}
-.rank_num{position:absolute;top:0;left:10px;font-size:80px;color:#09f;font-family:monospace;pointer-events:none;opacity:0.5;z-index:1;}
+.rank_num{position:absolute;top:-5px;left:10px;font-size:70px;color:#09f;font-family:monospace;pointer-events:none;opacity:0.5;z-index:1;}
 .rank_1_text{color:#e4c900;}
 .rank_2_text{color:#696969;}
 .rank_3_text{color:#ae5d00;}
 .rank_inner{position:absolute;top:0;left:0;bottom:0;right:0;z-index:2;}
-.rank_name{width:200%;font-size:30px;margin:10px 15px -5px 50px;padding:0;font-weight:600;transform-origin:top left;transform:scaleX(0.75);}
-.rank_score{font-size:24px;margin:0 15px 0 50px;padding:0;font-weight:600;}
+.rank_name{width:200%;font-size:28px;margin:3px 15px -5px 50px;padding:0;font-weight:600;transform-origin:top left;transform:scaleX(0.8);}
+.rank_score{font-size:22px;margin:0 15px 0 50px;padding:0;font-weight:600;}
+
+.title_tag{margin:0 3px;border-radius:5px;padding:1px 5px;font-size:80%;}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+input[type=number] {
+  appearance: textfield;
+}
+
+div.tweet {
+  text-align: center;
+}
+
+div.tweet button {
+  text-align: end;
+  border: none;
+  font-size: 20px;
+  background-image: linear-gradient(135deg, #1da1f2 20%, #000 80%);
+  padding:10px;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+}
