@@ -256,8 +256,8 @@ function tweet() {
   
   if (score == mqnum * 5001) text += "%0a称号 - 完全制覇 -";
   else if (score >= mqnum * 5000) text += "%0a称号 - 達人 -";
-  if (position <= 20) text += `%0a(${position} 位相当)`;
-  else text += "%0a(ランキング圏外)";
+  if (position <= 20) text += `%0a( ${position} 位相当)%0a`;
+  else text += "%0a(ランキング圏外)%0a";
 
   let hashtags = "GNIGuesser";
   let url = "https://firmianai7z9.github.io/GNIGuesser/index.html";
