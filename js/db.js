@@ -14,7 +14,7 @@ const getRank = async(e) => {
 
   var ret = [];
 
-  return db.collection("result_" + e).orderBy('time', 'asc').orderBy('score', 'desc').get().then((querySnapshot) => {
+  return db.collection("result_" + e).orderBy('score', 'desc').get().then((querySnapshot) => {
     let cnt = 0;
     querySnapshot.forEach((doc) => {
       if (cnt < 20) {
@@ -27,6 +27,8 @@ const getRank = async(e) => {
         doc.ref.delete();
       }
     });
+    ret.sort((a, b) => a.time - b.time);
+    ret.sort((a, b) => b.score - a.score);
     return ret;
   });
 }
