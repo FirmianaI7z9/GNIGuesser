@@ -163,6 +163,7 @@ function next_game(){
 }
 
 function result(){
+  document.getElementById('button_next').style = "display:none;";
   document.getElementById('rname').innerHTML = `<b>${localStorage.getItem('username')}</b> さんの総スコア`;
   if (suddendeath) {
     score = qnum + (dead ? -1 : 0);
