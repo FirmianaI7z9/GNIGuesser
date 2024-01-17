@@ -14,7 +14,7 @@ const getRank = async(e) => {
 
   var ret = [];
 
-  return db.collection("result_" + e).orderBy('score', 'desc').get().then((querySnapshot) => {
+  return db.collection("result_" + e).orderBy('time', 'asc').orderBy('score', 'desc').get().then((querySnapshot) => {
     let cnt = 0;
     querySnapshot.forEach((doc) => {
       if (cnt < 20) {

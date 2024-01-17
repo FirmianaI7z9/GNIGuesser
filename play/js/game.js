@@ -99,6 +99,7 @@ function set_Q() {
     result();
     return;
   }
+  document.getElementById('button_next').style = "display:none;";
 
   var cname = data[qnum].jp;
 
