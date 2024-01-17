@@ -23,7 +23,7 @@ const getRank = async(e) => {
         ret.push(d);
         cnt++;
       }
-      else {
+      else if (cnt >= 25) {
         doc.ref.delete();
       }
     });

@@ -38,6 +38,11 @@
       <a onclick="start_game('gni', 30)"></a>
       <p>はじめる!(全30問)</p>
     </div>
+
+    <div id="button_start3" class="main_button" style="display:none;">
+      <a onclick="start_game('gni', 0)"></a>
+      <p>はじめる!(サドンデス)</p>
+    </div>
   </div>
 
   <div class="play_container" id="pc1" style="display:none;">
@@ -45,17 +50,18 @@
     <p id="cscore" style="font-size:24px;"></p>
     <p id="cname" style="font-size:28px;"><b></b></p>
     <div class="input_container">
-      <input type="number" class="snum_field" id="snum_0" maxlength="2" minlength="0" placeholder="0~99"/>
+      <input type="text" class="snum_field" id="snum_0" maxlength="2" minlength="0" placeholder="0~99" oninput="value = value.replace(/[^0-9]+/i,'');" inputmode="numeric"/>
       <span style="font-size:20px;"><b>兆</b></span>
-      <input type="number" class="snum_field" id="snum_1" maxlength="4" minlength="0" placeholder="0~9999"/>
+      <input type="text" class="snum_field" id="snum_1" maxlength="4" minlength="0" placeholder="0~9999" oninput="value = value.replace(/[^0-9]+/i,'');" inputmode="numeric"/>
       <span style="font-size:20px;"><b>億</b></span>
-      <input type="number" class="snum_field" id="snum_2" maxlength="4" minlength="0" placeholder="0~9999"/>
+      <input type="text" class="snum_field" id="snum_2" maxlength="4" minlength="0" placeholder="0~9999" oninput="value = value.replace(/[^0-9]+/i,'');" inputmode="numeric"/>
       <span style="font-size:20px;"><b>万ドル</b></span>
     </div>
 
     <div id="answer_field" class="answer_field">
       <p id="ans_val" style="font-size:24px;color:red;"></p>
       <p id="score" style="font-size:24px;"></p>
+      <p id="info" style="display:none;">G A M E - O V E R</p>
     </div>
   
     <div id="button_submit" class="main_button">

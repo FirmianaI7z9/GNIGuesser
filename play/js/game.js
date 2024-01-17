@@ -16,15 +16,19 @@ var data = [];
 var kind = "";
 var detail = [];
 var position = 0;
+var suddendeath = false;
+var dead = false;
 
 function unfield_change() {
   if (document.getElementById('username').value.length >= 1) {
     document.getElementById('button_start1').style = "";
     document.getElementById('button_start2').style = "";
+    document.getElementById('button_start3').style = "";
   }
   else {
     document.getElementsById('button_start1').style = "display:none;";
     document.getElementsById('button_start2').style = "display:none;";
+    document.getElementsById('button_start3').style = "display:none;";
   }
 }
 
@@ -45,12 +49,15 @@ window.onload = function() {
   if (localStorage.getItem('username') != "") {
     document.getElementById('button_start1').style = "";
     document.getElementById('button_start2').style = "";
+    document.getElementById('button_start3').style = "";
   }
 }
 
 function start_game(k, n) {
   if (document.getElementById('username').value == "") return;
 
+  if (n == 0) suddendeath = true;
+  
   mqnum = n;
   kind = k;
   localStorage.setItem('username', document.getElementById('username').value.replace(' ', ''));
@@ -70,20 +77,25 @@ function start_game(k, n) {
     arr.forEach((item) => {
       item = item.split(' ');
       data.push({jp: item[0], value:item[1]});
-      data = shuffleArr(data);
-
-      var pc0 = document.getElementById("pc0");
-      var pc1 = document.getElementById("pc1");
-      pc0.style = "display:none";
-      pc1.style = "";
-  
-      set_Q();
     });
+    data = shuffleArr(data);
+    if (suddendeath == true) mqnum = data.length;
+
+    var pc0 = document.getElementById("pc0");
+    var pc1 = document.getElementById("pc1");
+    pc0.style = "display:none";
+    pc1.style = "";
+
+    set_Q();
   });
 }
 
 function set_Q() {
   if (qnum == mqnum) {
+    result();
+    return;
+  }
+  else if (suddendeath == true && dead == true) {
     result();
     return;
   }
@@ -133,6 +145,11 @@ function judge(){
   text_cntup(document.getElementById('score'), 0, s, 1, 'スコア : <span style="font-size:30px;color:red;"><b>', ' pts.</b></span>');
   score += s;
 
+  if (suddendeath == true && s < 4000) {
+    document.getElementById('info').style = "font-size:24px;color:red;font-weight:600;";
+    dead = true;
+  }
+
   detail.push({cname: data[qnum].jp, sub: submit, ans: ans, point: s});
 
   document.getElementById('answer_field').style = "";
@@ -147,9 +164,13 @@ function next_game(){
 
 function result(){
   document.getElementById('rname').innerHTML = `<b>${localStorage.getItem('username')}</b> さんの総スコア`;
-  text_cntup(document.getElementById('rscore'), 0, score, 3, '<b>', ' pts.</b>');
-  if (score == mqnum * 5001) document.getElementById('rtitle').innerHTML = "称号 <b>- 完全制覇 -</b>";
-  else if (score >= mqnum * 5000) document.getElementById('rtitle').innerHTML = "称号 <b>- 達人 -</b>";
+  if (suddendeath) {
+    score = qnum + (dead ? -1 : 0);
+    text_cntup(document.getElementById('rscore'), 0, score, 3, '<b>', ' 問</b>');
+  }
+  else text_cntup(document.getElementById('rscore'), 0, score, 3, '<b>', ' pts.</b>');
+  if ((!suddendeath && score == mqnum * 5001) || (suddendeath && score == mqnum)) document.getElementById('rtitle').innerHTML = "称号 <b>- 完全制覇 -</b>";
+  else if ((!suddendeath && score >= mqnum * 5000) || (suddendeath && score >= mqnum * 0.9)) document.getElementById('rtitle').innerHTML = "称号 <b>- 達人 -</b>";
   else document.getElementById('rtitle').innerHTML = "";
 
   var unit = "";
@@ -177,7 +198,7 @@ function result(){
   });
 
   const wait_get_place = (async() => {
-    var rank = await getRank(`${kind}_${mqnum}`);
+    var rank = await getRank(`${kind}_${suddendeath ? "sudden" : mqnum}`);
 
     let cnt = 1;
     rank.forEach((item) => {
@@ -192,14 +213,14 @@ function result(){
       rank.forEach((item) => {
         if (localStorage.getItem('username') == item.name) {
           if (score > item.score) {
-            updateRank({kind: `${kind}_${mqnum}`, score: score, time: Date.now(), id: item.id});
+            updateRank({kind: `${kind}_${suddendeath ? "sudden" : mqnum}`, score: score, time: Date.now(), id: item.id});
           }
           isFirst = false;
         }
       });
 
       if (isFirst == true) {
-        setRank({kind: `${kind}_${mqnum}`, name: localStorage.getItem('username'), score: score, time: Date.now()});
+        setRank({kind: `${kind}_${suddendeath ? "sudden" : mqnum}`, name: localStorage.getItem('username'), score: score, time: Date.now()});
       }
     }
 
@@ -216,8 +237,8 @@ function calc_score(s, a) {
   if (a == s) return 5001;
   else if (Math.abs(a - s) <= Math.floor(a / 10)) return 5000;
   else if (s < 0) return 0;
-  else if (s < a) return Math.floor(5000 * Math.pow(s / (a - Math.floor(a / 10)), 2));
-  else if (s <= a * 5) return Math.floor(5000 * Math.pow((a * 5 - s) / (a * 4 - Math.floor(a / 10)), 2));
+  else if (s < a) return Math.floor(5000 * Math.pow(s / (a - Math.floor(a / 10)), 1.5));
+  else if (s <= a * 5) return Math.floor(5000 * Math.pow((a * 5 - s) / (a * 4 - Math.floor(a / 10)), 1.5));
   else return 0;
 }
 
@@ -251,11 +272,12 @@ function text_cntup(text, from, to, duration, prefix, suffix) {
 }
 
 function tweet() {
-  let kindjp = {gni: "GNI", gnipercap: "一人当たりGNI", population: "人口"};
-  let text = `${localStorage.getItem('username')} が「${kindjp[kind]} (${mqnum}問版)」で ${score} pts.を獲得！`;
+  let kindjp = {gni: "GNI", gnipercap: "一人当たりGNI", population: "国別人口"};
+  let text = `${localStorage.getItem('username')} が「${kindjp[kind]} (${suddendeath ? "サドンデス" : mqnum + "問版"})」で` +
+    ` ${score} ${suddendeath ? "問正解" : "pts.を獲得"}！`;
   
-  if (score == mqnum * 5001) text += "%0a称号 - 完全制覇 -";
-  else if (score >= mqnum * 5000) text += "%0a称号 - 達人 -";
+  if ((!suddendeath && score == mqnum * 5001) || (suddendeath && score == mqnum)) text += "%0a称号 - 完全制覇 -";
+  else if ((!suddendeath && score >= mqnum * 5000) || (suddendeath && score >= mqnum * 0.9)) text += "%0a称号 - 達人 -";
   if (position <= 20) text += `%0a( ${position} 位相当)%0a`;
   else text += "%0a(ランキング圏外)%0a";
 
