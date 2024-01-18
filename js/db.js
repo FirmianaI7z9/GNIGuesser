@@ -21,11 +21,11 @@ const getRank = async(e) => {
         var d = doc.data();
         d['id'] = doc.id;
         ret.push(d);
-        cnt++;
       }
       else if (cnt >= 25) {
         doc.ref.delete();
       }
+      cnt++;
     });
     ret.sort((a, b) => a.time - b.time);
     ret.sort((a, b) => b.score - a.score);
@@ -59,7 +59,7 @@ function setAchievement(e) {
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  db.collection("achievement").set({
+  db.collection("achievement").add({
     name: e.name, type: e.type, score: e.score, time: e.time, level: e.level
   });
 
