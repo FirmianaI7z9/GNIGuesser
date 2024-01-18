@@ -25,6 +25,9 @@ function displayRank(kind, max = -1) {
     case 'population':
       title = '国別人口';
       break;
+    case 'population-jp':
+      title = '都道府県別人口';
+      break;
   }
   title = title + `(${max == -1 ? kind.split('_')[1] + "問版" : "サドンデス"})`;
   document.getElementById('rank_title').innerHTML = `「${title}」<span style="display:inline-block;">スコアランキング</span>`;

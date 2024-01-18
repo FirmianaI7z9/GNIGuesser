@@ -106,6 +106,8 @@ function set_Q() {
   document.getElementById('qnum').innerHTML = `第 ${qnum + 1} 問 (${mqnum}問中)`;
   document.getElementById('cscore').innerHTML = `現在のスコア : ${score} pts.`;
   document.getElementById('cname').innerHTML = `<b>${cname}</b>`;
+
+  /* 種別追加時設定必須 */
   if (kind == 'gni') {
     document.getElementById('snum_0').value = '';
     document.getElementById('snum_1').value = '';
@@ -118,6 +120,16 @@ function set_Q() {
     document.getElementById('snum_0').value = '';
     document.getElementById('snum_1').value = '';
   }
+  else if (kind == 'population-jp') {
+    document.getElementById('snum').value = '';
+  }
+  else if (kind == 'population_city_jp') {
+
+  }
+  else if (kind == 'manuproval_jp') {
+
+  }
+
   document.getElementById('answer_field').style = "display:none;";
   document.getElementById('button_next').style = "display:none;";
   document.getElementById('button_submit').style = "";
@@ -125,13 +137,18 @@ function set_Q() {
 
 function judge(){
   var submit = 0;
+
+  /* 種別追加時設定必須 */
   if (kind == 'gni') submit = Number(document.getElementById('snum_0').value) * 100000000 + Number(document.getElementById('snum_1').value) * 10000 + Number(document.getElementById('snum_2').value);
   else if (kind == 'gnipercap') submit = Number(document.getElementById('snum').value);
   else if (kind == 'population') submit = Number(document.getElementById('snum_0').value) * 10000 + Number(document.getElementById('snum_1').value);
+  else if (kind == 'population-jp') submit = Number(document.getElementById('snum').value);
 
   if (submit == 0) return;
 
   var ans = data[qnum].value;
+
+  /* 種別追加時設定必須 */
   if (kind == 'gni') document.getElementById('ans_val').innerHTML = 
     `正解 : <b>` + (ans >= 100000000 ? `${Math.floor(ans / 100000000)}兆` : "") 
       + (ans >= 10000 ? `${Math.floor(ans % 100000000 / 10000)}億` : "")
@@ -140,6 +157,7 @@ function judge(){
   else if (kind == 'population') document.getElementById('ans_val').innerHTML =
     `正解 : <b>` + (ans >= 10000 ? `${Math.floor(ans / 10000)}億` : "")
       + `${ans % 10000}万人</b>`;
+  else if (kind == 'population-jp') document.getElementById('ans_val').innerHTML = `正解 : <b>${ans}万人</b>`;
 
   var s = calc_score(submit, ans);
 
@@ -194,6 +212,8 @@ function result(){
   }
 
   var unit = "";
+
+  /* 種別追加時設定必須 */
   switch (kind) {
     case 'gni':
       unit = '万ドル';
@@ -204,7 +224,11 @@ function result(){
     case 'population':
       unit = '万人';
       break;
+    case 'population-jp':
+      unit = '万人';
+      break;
   }
+
   let cnt = 0;
   const table = document.getElementById("rt");
   detail.forEach((item) => {
@@ -260,10 +284,12 @@ function result(){
 }
 
 function calc_score(s, a) {
+  /* 種別追加時設定必須 */
   const val = {
     gni: {m: 2000000000, al: 200},
     gnipercap: {m: 200000, al: 20},
-    population: {m: 200000, al: 36}
+    population: {m: 200000, al: 36},
+    'population-jp': {m: 2000, al: 20}
   };
 
   let l = (Math.log2(a / val[kind].m)) / Math.log2(val[kind].al);
@@ -307,7 +333,9 @@ function text_cntup(text, from, to, duration, prefix, suffix) {
 }
 
 function tweet() {
-  let kindjp = {gni: "GNI", gnipercap: "一人当たりGNI", population: "国別人口"};
+  /* 種別追加時設定必須 */
+  let kindjp = {gni: "GNI", gnipercap: "一人当たりGNI", population: "国別人口", 'population-jp': "都道府県別人口"};
+
   let text = `${localStorage.getItem('username')} が「${kindjp[kind]} (${suddendeath ? "サドンデス" : mqnum + "問版"})」で` +
     ` ${score} ${suddendeath ? "問正解" : "pts.を獲得"}！`;
   
