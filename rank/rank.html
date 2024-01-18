@@ -23,42 +23,23 @@
   <a href="../index.html">ホームに戻る</a>
 
   <div class="main_button_container">
-    <div class="main_button">
-      <a onclick="displayRank('gni_5')"></a>
-      <p>GNI(5)</p>
-    </div>
-    <div class="main_button">
-      <a onclick="displayRank('gni_30')"></a>
-      <p>GNI(30)</p>
-    </div>
-    <div class="main_button">
-      <a onclick="displayRank('gni_sudden', 200)"></a>
-      <p>GNI(∞)</p>
-    </div>
-    <div class="main_button">
-      <a onclick="displayRank('gnipercap_5')"></a>
-      <p>一人当たりGNI(5)</p>
-    </div>
-    <div class="main_button">
-      <a onclick="displayRank('gnipercap_30')"></a>
-      <p>一人当たりGNI(30)</p>
-    </div>
-    <div class="main_button">
-      <a onclick="displayRank('gnipercap_sudden', 200)"></a>
-      <p>一人当たりGNI(∞)</p>
-    </div>
-    <div class="main_button">
-      <a onclick="displayRank('population_5')"></a>
-      <p>国別人口(5)</p>
-    </div>
-    <div class="main_button">
-      <a onclick="displayRank('population_30')"></a>
-      <p>国別人口(30)</p>
-    </div>
-    <div class="main_button">
-      <a onclick="displayRank('population_sudden', 200)"></a>
-      <p>国別人口(∞)</p>
-    </div>
+    <select id="kind" class="kind_select" onchange="selectKind()">
+      <optgroup label="GNI">
+        <option value="gni_5">GNI(5問版)</option>
+        <option value="gni_30">GNI(30問版)</option>
+        <option value="gni_sudden/200">GNI(サドンデス)</option>
+      </optgroup>
+      <optgroup label="一人当たりGNI">
+        <option value="gnipercap_5">一人当たりGNI(5問版)</option>
+        <option value="gnipercap_30">一人当たりGNI(30問版)</option>
+        <option value="gnipercap_sudden/200">一人当たりGNI(サドンデス)</option>
+      </optgroup>
+      <optgroup label="国別人口">
+        <option value="population_5">国別人口(5問版)</option>
+        <option value="population_30">国別人口(30問版)</option>
+        <option value="population_sudden/200">国別人口(サドンデス)</option>
+      </optgroup>
+    </select>
   </div>
   
   <div class="rank_item" id="rank_item_default" style="display:none;">

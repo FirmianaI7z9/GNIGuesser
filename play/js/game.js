@@ -166,14 +166,32 @@ function next_game(){
 function result(){
   document.getElementById('button_next').style = "display:none;";
   document.getElementById('rname').innerHTML = `<b>${localStorage.getItem('username')}</b> さんの総スコア`;
+
   if (suddendeath) {
     score = qnum + (dead ? -1 : 0);
     text_cntup(document.getElementById('rscore'), 0, score, 3, '<b>', ' 問</b>');
   }
-  else text_cntup(document.getElementById('rscore'), 0, score, 3, '<b>', ' pts.</b>');
-  if ((!suddendeath && score == mqnum * 5001) || (suddendeath && score == mqnum)) document.getElementById('rtitle').innerHTML = "称号 <b>- 完全制覇 -</b>";
-  else if ((!suddendeath && score >= mqnum * 5000) || (suddendeath && score >= mqnum * 0.9)) document.getElementById('rtitle').innerHTML = "称号 <b>- 達人 -</b>";
-  else document.getElementById('rtitle').innerHTML = "";
+  else {
+    text_cntup(document.getElementById('rscore'), 0, score, 3, '<b>', ' pts.</b>');
+  }
+
+  if ((!suddendeath && score == mqnum * 5001) || (suddendeath && score == mqnum)) {
+    document.getElementById('rtitle').innerHTML = "称号 <b>- 完全制覇 -</b>";
+    setAchievement({
+      name: localStorage.getItem('username'), type: `${kind}_${suddendeath ? "sudden" : mqnum}`,
+      score: score, time: Date.now(), level: "完"
+    });
+  }
+  else if ((!suddendeath && score >= mqnum * 5000) || (suddendeath && score >= mqnum * 0.9)) {
+    document.getElementById('rtitle').innerHTML = "称号 <b>- 達人 -</b>";
+    setAchievement({
+      name: localStorage.getItem('username'), type: `${kind}_${suddendeath ? "sudden" : mqnum}`,
+      score: score, time: Date.now(), level: "達"
+    });
+  }
+  else {
+    document.getElementById('rtitle').innerHTML = "";
+  }
 
   var unit = "";
   switch (kind) {
@@ -202,28 +220,34 @@ function result(){
   const wait_get_place = (async() => {
     var rank = await getRank(`${kind}_${suddendeath ? "sudden" : mqnum}`);
 
-    let cnt = 1;
-    rank.forEach((item) => {
-      if (score < item.score) cnt++;
-    });
-
-    document.getElementById('rrank').innerHTML = `<b>${Math.min(cnt, 21)} 位${cnt > 20 ? "以下" : ""}</b>`;
-    position = cnt;
-
-    if (cnt <= 20) {
-      let isFirst = true;
+    if (rank.length > 0) {
+      let cnt = 1;
       rank.forEach((item) => {
-        if (localStorage.getItem('username') == item.name) {
-          if (score > item.score) {
-            updateRank({kind: `${kind}_${suddendeath ? "sudden" : mqnum}`, score: score, time: Date.now(), id: item.id});
-          }
-          isFirst = false;
-        }
+        if (score < item.score) cnt++;
       });
 
-      if (isFirst == true) {
-        setRank({kind: `${kind}_${suddendeath ? "sudden" : mqnum}`, name: localStorage.getItem('username'), score: score, time: Date.now()});
+      document.getElementById('rrank').innerHTML = `<b>${Math.min(cnt, 21)} 位${cnt > 20 ? "以下" : ""}</b>`;
+      position = cnt;
+
+      if (cnt <= 20) {
+        let isFirst = true;
+        rank.forEach((item) => {
+          if (localStorage.getItem('username') == item.name) {
+            if (score > item.score && isFirst) {
+              updateRank({kind: `${kind}_${suddendeath ? "sudden" : mqnum}`, score: score, time: Date.now(), id: item.id});
+            }
+            isFirst = false;
+          }
+        });
+
+        if (isFirst) {
+          setRank({kind: `${kind}_${suddendeath ? "sudden" : mqnum}`, name: localStorage.getItem('username'), score: score, time: Date.now()});
+        }
       }
+    }
+    else {
+      document.getElementById('rrank').innerHTML = `順位取得失敗`;
+      setRank({kind: `${kind}_${suddendeath ? "sudden" : mqnum}`, name: localStorage.getItem('username'), score: score, time: Date.now()});
     }
 
     var pc1 = document.getElementById("pc1");
@@ -236,11 +260,20 @@ function result(){
 }
 
 function calc_score(s, a) {
+  const val = {
+    gni: {m: 2000000000, al: 200},
+    gnipercap: {m: 200000, al: 20},
+    population: {m: 200000, al: 36}
+  };
+
+  let l = (Math.log2(a / val[kind].m)) / Math.log2(val[kind].al);
+  let w = a * Math.pow(0.5, l + 1) / 10, d = a * (1 + Math.pow(0.333, l));
+
   if (a == s) return 5001;
-  else if (Math.abs(a - s) <= Math.floor(a / 10)) return 5000;
-  else if (s < 0) return 0;
-  else if (s < a) return Math.floor(5000 * Math.pow(s / (a - Math.floor(a / 10)), 1.5));
-  else if (s <= a * 5) return Math.floor(5000 * Math.pow((a * 5 - s) / (a * 4 - Math.floor(a / 10)), 1.5));
+  else if (Math.abs(a - s) <= w) return 5000;
+  else if (s < 0 || s > d) return 0;
+  else if (s < a) return Math.floor(5000 * Math.pow(s / (a - w), 1.5));
+  else if (s <= d) return Math.floor(5000 * Math.pow((d - s) / (d - a - w), 1.5));
   else return 0;
 }
 

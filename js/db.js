@@ -55,12 +55,12 @@ function setRank(e){
   return;
 }
 
-function setData(e){
+function setAchievement(e) {
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  db.collection("gni_data").doc(e.cname).set({
-    gni: e.gni, gnipercap: e.gpc, jp: e.jp, type: false
+  db.collection("achievement").set({
+    name: e.name, type: e.type, score: e.score, time: e.time, level: e.level
   });
 
   return;

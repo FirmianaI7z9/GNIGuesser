@@ -4,6 +4,13 @@ window.onload = function() {
 
 var rank_save = {};
 
+function selectKind() {
+  let e = document.getElementById('kind').value;
+  e = e.split('/');
+  var k = e[0].split('_');
+  displayRank(e[0], (k[1] == 'sudden' ? Number(e[1]) : -1));
+}
+
 function displayRank(kind, max = -1) {
   const item = document.getElementById('rank_item_default');
   var ele = document.getElementById('rank_container');

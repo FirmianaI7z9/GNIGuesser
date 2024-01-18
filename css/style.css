@@ -57,3 +57,9 @@ div.tweet button {
   color: white;
   cursor: pointer;
 }
+
+.kind_select{width:30%;height:60px;min-width:320px!important;border:solid 1px #444;border-radius:5px;margin:5px;font-size:20px;font-weight:600;}
+.kind_select option{font-size:16px;}
+.kind_select optgroup{font-size:16px;font-weight:600;}
+
+table td{padding:0 5px;}
