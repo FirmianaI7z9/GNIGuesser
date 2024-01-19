@@ -63,3 +63,6 @@ div.tweet button {
 .kind_select optgroup{font-size:16px;font-weight:600;}
 
 table td{padding:0 5px;}
+
+.maintenance{position:fixed;top:0;left:0;height:100%;width:100%;background-color:#444;color:#fff;z-index:10;}
+.maintenance h3,.maintenance p{text-align:center;}
