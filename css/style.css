@@ -20,7 +20,7 @@ h2,p{margin:10px 0;}
 .snum_field{margin:5px auto!important;width:90px;font-size:24px;text-align:right;}
 .wnum_field{margin:5px auto!important;width:240px;font-size:24px;text-align:right;}
 
-.rank_item{position:relative;width:30%;min-width:300px;height:80px;border:solid 1px #09f;background-color:#c9e9ff;border-radius:5px;margin:5px auto;}
+.rank_item,.past_item{position:relative;width:30%;min-width:300px;height:80px;border:solid 1px #09f;background-color:#c9e9ff;border-radius:5px;margin:5px auto;}
 .rank_1{border:solid 1px #e4c900;background-color:#ffc;}
 .rank_2{border:solid 1px #696969;background-color:#eee;}
 .rank_3{border:solid 1px #ae5d00;background-color:#ffd7b0;}
@@ -33,6 +33,10 @@ h2,p{margin:10px 0;}
 .rank_score{font-size:22px;margin:0 15px 0 50px;padding:0;font-weight:600;}
 
 .title_tag{margin:0 3px;border-radius:5px;padding:1px 5px;font-size:80%;}
+
+.past_container{display:flex;flex-wrap:wrap;width:100%;justify-content:center;}
+.past_item_container{width:30%;min-width:340px;}
+.past_item{width:95%!important;}
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
