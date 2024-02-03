@@ -60,7 +60,7 @@ function setAchievement(e) {
   const db = firebase.firestore();
 
   db.collection("achievement").add({
-    name: e.name, type: e.type, score: e.score, time: e.time, level: e.level
+    name: e.name, type: e.type, score: e.score, subscore: e.subscore, time: e.time, level: e.level
   });
 
   return;

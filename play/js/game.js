@@ -12,6 +12,7 @@ const shuffleArr = (src) => {
 var mqnum = 0;
 var qnum = 0;
 var score = 0;
+var subscore = -1;
 var data = [];
 var kind = "";
 var detail = [];
@@ -183,6 +184,7 @@ function result(){
   document.getElementById('rname').innerHTML = `<b>${localStorage.getItem('username')}</b> さんの総スコア`;
 
   if (suddendeath) {
+    subscore = score;
     score = qnum + (dead ? -1 : 0);
     text_cntup(document.getElementById('rscore'), 0, score, 3, '<b>', ' 問</b>');
   }
@@ -194,14 +196,14 @@ function result(){
     document.getElementById('rtitle').innerHTML = "称号 <b>- 完全制覇 -</b>";
     setAchievement({
       name: localStorage.getItem('username'), type: `${kind}_${suddendeath ? "sudden" : mqnum}`,
-      score: score, time: Date.now(), level: "完"
+      score: score, subscore: subscore, time: Date.now(), level: "完"
     });
   }
   else if ((!suddendeath && score >= mqnum * 5000) || (suddendeath && score >= mqnum * 0.9)) {
     document.getElementById('rtitle').innerHTML = "称号 <b>- 達人 -</b>";
     setAchievement({
       name: localStorage.getItem('username'), type: `${kind}_${suddendeath ? "sudden" : mqnum}`,
-      score: score, time: Date.now(), level: "達"
+      score: score, subscore: subscore, time: Date.now(), level: "達"
     });
   }
   else {
