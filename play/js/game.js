@@ -290,7 +290,7 @@ function calc_score(s, a) {
     gnipercap: {m: 200000, al: 20},
     population: {m: 200000, al: 36},
     'population-jp': {m: 2000, al: 20},
-    'manuproval-jp': {m: 20000, al: 20}
+    'manuproval-jp': {m: 200000, al: 20}
   };
 
   let l = (Math.log2(a / val[kind].m)) / Math.log2(val[kind].al);
