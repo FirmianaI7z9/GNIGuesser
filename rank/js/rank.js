@@ -31,6 +31,9 @@ function displayRank(kind, max = -1) {
     case 'manuproval-jp':
       title = '都道府県別製造業出荷額';
       break;
+    case 'populcity-jp':
+      title = '日本の市の人口';
+      break;
   }
   title = title + `(${max == -1 ? kind.split('_')[1] + "問版" : "サドンデス"})`;
   document.getElementById('rank_title').innerHTML = `「${title}」<span style="display:inline-block;">スコアランキング</span>`;

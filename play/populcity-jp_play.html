@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  <title>GNIGuesser</title>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+  </script>
+  <!-- メンテナンス時消す -->
+  <script src="js/game.js"></script>
+  <script src="../js/db.js"></script>
+</head>
+
+<body><div class="bo">
+  
+  <h1>GNIGuesser</h1>
+
+  <h2>日本の市の人口</h2>
+
+  <p>出典：<a href="https://www.e-stat.go.jp/stat-search/files?page=1&query=%E5%B8%82%E7%94%BA%E6%9D%91%20%E4%BA%BA%E5%8F%A3&layout=dataset&toukei=00200521&tstat=000001049104&cycle=0&tclass1=000001049105&stat_infid=000032143614&tclass2val=0&metadata=1&data=1" target="_blank" rel="noopener noreferrer">令和２年国勢調査（総務省統計局）</a>、統計年次：2020年</p>
+
+  <div class="play_container" id="pc0">
+    <p>プレイヤー名<br>(10文字以内、絵文字不可、空白無効)</p>
+    <div class="input_container">
+      <input type="text" class="username_field" id="username" maxlength="10" minlength="1" onchange="unfield_change()"/>
+    </div>
+  
+    <div id="button_start1" class="main_button" style="display:none;">
+      <a onclick="start_game('populcity-jp', 5)"></a>
+      <p>はじめる!(全5問)</p>
+    </div>
+
+    <div id="button_start2" class="main_button" style="display:none;">
+      <a onclick="start_game('populcity-jp', 30)"></a>
+      <p>はじめる!(全30問)</p>
+    </div>
+
+    <div id="button_start3" class="main_button" style="display:none;">
+      <a onclick="start_game('populcity-jp', 100)"></a>
+      <p>はじめる!(全100問)</p>
+    </div>
+
+    <div id="button_start4" class="main_button" style="display:none;">
+      <a onclick="start_game('populcity-jp', 0)"></a>
+      <p>はじめる!(サドンデス)</p>
+    </div>
+  </div>
+
+  <div class="play_container" id="pc1" style="display:none;">
+    <p id="qnum" style="font-size:20px;"></p>
+    <p id="cscore" style="font-size:24px;"></p>
+    <p id="cname" style="font-size:28px;"><b></b></p>
+    <div class="input_container">
+      <input type="text" class="snum_field" id="snum_0" maxlength="3" minlength="0" placeholder="0~999" oninput="value = value.replace(/[^0-9]+/i,'');" inputmode="numeric"/>
+      <span style="font-size:20px;"><b>万</b></span>
+      <input type="text" class="snum_field" id="snum_1" maxlength="4" minlength="0" placeholder="0~9999" oninput="value = value.replace(/[^0-9]+/i,'');" inputmode="numeric"/>
+      <span style="font-size:20px;"><b>人</b></span>
+    </div>
+
+    <div id="answer_field" class="answer_field">
+      <p id="ans_val" style="font-size:24px;color:red;"></p>
+      <p id="score" style="font-size:24px;"></p>
+      <p id="info" style="display:none;">G A M E - O V E R</p>
+    </div>
+  
+    <div id="button_submit" class="main_button">
+      <a onclick="judge()"></a>
+      <p>Guess!</p>
+    </div>
+  
+    <div id="button_next" class="main_button">
+      <a onclick="next_game()"></a>
+      <p>次に進む</p>
+    </div>
+  </div>
+  
+  <div class="play_container" id="pc2" style="display:none;">
+    <p style="font-size:20px;">最終結果</p>
+    <p id="rname" style="font-size:24px;"></p>
+    <p id="rscore" style="font-size:30px;"></p>
+    <p id="rtitle" style="font-size:24px;"></p>
+    <p style="font-size:20px;">ランキング</p>
+    <p id="rrank" style="font-size:30px;color:red;"></p>
+
+    <table style="width:50%;min-width:300px;margin:5px auto;">
+      <thead>
+        <tr style="font-size:120%;">
+          <th style="width:40%;">市名</th>
+          <th style="width:40%;">解答<br>正解</th>
+          <th style="width:20%;">得点</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr id="rt" style="display:none;">
+          <th id="c"></th>
+          <th id="s"></th>
+          <th id="p"></th>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="tweet" id="tweet">
+        <button id="twitter-share-button" onclick="tweet()">結果をTweet / Post</button>
+        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    </div>
+  
+    <div class="main_button" style="margin:15px auto;">
+      <a href="populcity-jp_play.html"></a>
+      <p>再チャレンジ</p>
+    </div>
+
+    <div class="main_button" style="margin:15px auto;">
+      <a href="../index.html"></a>
+      <p>メインページに戻る</p>
+    </div>
+  </div>
+
+  <p class="copyright">©2024 FirmianaI7z9</p>
+</div></body>
+
+</html>

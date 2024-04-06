@@ -99,3 +99,25 @@ function adjustRank(e){
 
   return;
 }
+
+function getAllData(){
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  var name_list = ['achievement','result_gni_5','result_gni_30','result_gni_sudden','result_gnipercap_5','result_gnipercap_30','result_gnipercap_sudden','result_manuproval-jp_5','result_manuproval-jp_30','result_manuproval-jp_sudden','result_population-jp_5','result_population-jp_30','result_population-jp_sudden','result_population_5','result_population_30','result_population_sudden'];
+
+  name_list.forEach((name) => {
+    var res = '';
+    db.collection(name).orderBy('score', 'desc').get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        var i = doc.data();
+        res += `${i.name}\t${i.score}\n`;
+      });
+      console.log(`Collection Name : ${name}`);
+      console.log(res);
+    });
+  });
+
+
+  return;
+}

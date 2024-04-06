@@ -48,9 +48,11 @@ function set(){
 window.onload = function() {
   document.getElementById('username').value = localStorage.getItem('username');
   if (localStorage.getItem('username') != "") {
-    document.getElementById('button_start1').style = "";
-    document.getElementById('button_start2').style = "";
-    document.getElementById('button_start3').style = "";
+    for (let i = 1; i <= 5; i++){
+      if (document.getElementById(`button_start${i}`) != null) {
+        document.getElementById(`button_start${i}`).style = "";
+      }
+    }
   }
 }
 
@@ -123,8 +125,9 @@ function set_Q() {
   else if (kind == 'population-jp') {
     document.getElementById('snum').value = '';
   }
-  else if (kind == 'population_city_jp') {
-
+  else if (kind == 'populcity-jp') {
+    document.getElementById('snum_0').value = '';
+    document.getElementById('snum_1').value = '';
   }
   else if (kind == 'manuproval-jp') {
     document.getElementById('snum_0').value = '';
@@ -141,7 +144,7 @@ function judge(){
 
   /* 種別追加時設定必須 */
   if (false) submit = Number(document.getElementById('snum_0').value) * 100000000 + Number(document.getElementById('snum_1').value) * 10000 + Number(document.getElementById('snum_2').value);
-  else if (kind == 'gni' || kind == 'population' || kind == 'manuproval-jp') submit = Number(document.getElementById('snum_0').value) * 10000 + Number(document.getElementById('snum_1').value);
+  else if (kind == 'gni' || kind == 'population' || kind == 'manuproval-jp' || kind == 'populcity-jp') submit = Number(document.getElementById('snum_0').value) * 10000 + Number(document.getElementById('snum_1').value);
   else if (kind == 'gnipercap' || kind == 'population-jp') submit = Number(document.getElementById('snum').value);
 
   if (submit == 0) return;
@@ -156,6 +159,7 @@ function judge(){
   else if (kind == 'population') ans_val.innerHTML = `正解 : <b>` + (ans >= 10000 ? `${Math.floor(ans / 10000)}億` : "") + `${ans % 10000}万人</b>`;
   else if (kind == 'population-jp') ans_val.innerHTML = `正解 : <b>${ans}万人</b>`;
   else if (kind == 'manuproval-jp') ans_val.innerHTML = `正解 : <b>` + (ans >= 10000 ? `${Math.floor(ans / 10000)}兆` : "") + `${ans % 10000}億円</b>`;
+  else if (kind == 'populcity-jp') ans_val.innerHTML = `正解 : <b>` + (ans >= 10000 ? `${Math.floor(ans / 10000)}万` : "") + `${ans % 10000}人</b>`;
 
   var s = calc_score(submit, ans);
 
@@ -227,6 +231,9 @@ function result(){
     case 'manuproval-jp':
       unit = '億円';
       break;
+    case 'populcity-jp':
+      unit = '人';
+      break;
   }
 
   let cnt = 0;
@@ -290,7 +297,8 @@ function calc_score(s, a) {
     gnipercap: {m: 200000, al: 20},
     population: {m: 200000, al: 36},
     'population-jp': {m: 2000, al: 20},
-    'manuproval-jp': {m: 200000, al: 20}
+    'manuproval-jp': {m: 200000, al: 20},
+    'populcity-jp': {m: 5000000, al: 40}
   };
 
   let l = (Math.log2(a / val[kind].m)) / Math.log2(val[kind].al);
@@ -335,7 +343,7 @@ function text_cntup(text, from, to, duration, prefix, suffix) {
 
 function tweet() {
   /* 種別追加時設定必須 */
-  let kindjp = {gni: "GNI", gnipercap: "一人当たりGNI", population: "国別人口", 'population-jp': "都道府県別人口", 'manuproval-jp': "都道府県別製造業出荷額"};
+  let kindjp = {gni: "GNI", gnipercap: "一人当たりGNI", population: "国別人口", 'population-jp': "都道府県別人口", 'manuproval-jp': "都道府県別製造業出荷額", 'populcity-jp': "日本の市の人口"};
 
   let text = `${localStorage.getItem('username')} が「${kindjp[kind]} (${suddendeath ? "サドンデス" : mqnum + "問版"})」で` +
     ` ${score} ${suddendeath ? "問正解" : "pts.を獲得"}！`;
