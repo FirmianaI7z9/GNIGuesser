@@ -21,9 +21,10 @@
   
   <h1><a href="../index.html">GNIGuesser</a></h1>
 
-  <h2>都道府県別人口</h2>
+  <h2>都市の座標</h2>
 
-  <p>出典：<a href="https://www.e-stat.go.jp/dbview?sid=0003448231" target="_blank" rel="noopener noreferrer">e-stat 人口推計 各年10月1日現在人口 令和2年国勢調査基準 統計表</a>、統計年次：2021年10月</p>
+  <p>出典：<a href="https://amano-tec.com/data/" target="_blank" rel="noopener noreferrer">アマノ技研データベース</a></p>
+  <p>注：経度は東経を正、西経を負として-180～180の範囲にて小数で解答。緯度は北緯を正、南緯を負として-90～90の範囲にて小数で解答。いずれも判定は小数第四位まで。</p>
 
   <div class="play_container" id="pc0">
     <p>プレイヤー名<br>(10文字以内、絵文字不可、空白無効)</p>
@@ -32,17 +33,22 @@
     </div>
   
     <div id="button_start1" class="main_button" style="display:none;">
-      <a onclick="start_game('population-jp', 5)"></a>
+      <a onclick="start_game('city-coordinates', 5)"></a>
       <p>はじめる!(全5問)</p>
     </div>
 
     <div id="button_start2" class="main_button" style="display:none;">
-      <a onclick="start_game('population-jp', 30)"></a>
+      <a onclick="start_game('city-coordinates', 30)"></a>
       <p>はじめる!(全30問)</p>
     </div>
 
     <div id="button_start3" class="main_button" style="display:none;">
-      <a onclick="start_game('population-jp', 0)"></a>
+      <a onclick="start_game('city-coordinates', 100)"></a>
+      <p>はじめる!(全100問)</p>
+    </div>
+
+    <div id="button_start4" class="main_button" style="display:none;">
+      <a onclick="start_game('city-coordinates', 0)"></a>
       <p>はじめる!(サドンデス)</p>
     </div>
   </div>
@@ -52,12 +58,17 @@
     <p id="cscore" style="font-size:24px;"></p>
     <p id="cname" style="font-size:28px;"><b></b></p>
     <div class="input_container">
-      <input type="text" class="wnum_field" id="snum" maxlength="4" minlength="0" placeholder="0~9999" oninput="value = value.replace(/[^0-9]+/i,'');" inputmode="numeric"/>
-      <span style="font-size:20px;"><b>万人</b></span>
+      <span style="font-size:20px;"><b>緯度</b></span>
+      <input type="text" class="wnum_field" id="snum_0" maxlength="8" minlength="0" oninput="value = value.replace(/[^0-9\.\-]+/i,'');" inputmode="numeric"/>
+      <span style="font-size:20px;"><b>度</b></span><br>
+      <span style="font-size:20px;"><b>経度</b></span>
+      <input type="text" class="wnum_field" id="snum_1" maxlength="9" minlength="0" oninput="value = value.replace(/[^0-9\.\-]+/i,'');" inputmode="numeric"/>
+      <span style="font-size:20px;"><b>度</b></span>
     </div>
 
     <div id="answer_field" class="answer_field">
       <p id="ans_val" style="font-size:24px;color:red;"></p>
+      <p id="ans_dist" style="font-size:24px;color:red;"></p>
       <p id="score" style="font-size:24px;"></p>
       <p id="info" style="display:none;">G A M E - O V E R</p>
     </div>
@@ -84,8 +95,8 @@
     <table style="width:50%;min-width:300px;margin:5px auto;">
       <thead>
         <tr style="font-size:120%;">
-          <th style="width:40%;">都道府県名</th>
-          <th style="width:40%;">解答<br>正解</th>
+          <th style="width:40%;">都市名</th>
+          <th style="width:40%;">解答<br>正解<br>距離</th>
           <th style="width:20%;">得点</th>
         </tr>
       </thead>
@@ -104,7 +115,7 @@
     </div>
   
     <div class="main_button" style="margin:15px auto;">
-      <a href="population-jp_play.html"></a>
+      <a href="city-coordinates_play.html"></a>
       <p>再チャレンジ</p>
     </div>
 

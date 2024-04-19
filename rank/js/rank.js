@@ -34,6 +34,9 @@ function displayRank(kind, max = -1) {
     case 'populcity-jp':
       title = '日本の市の人口';
       break;
+    case 'city-coordinates':
+      title = '世界の都市座標';
+      break;
   }
   title = title + `(${max == -1 ? kind.split('_')[1] + "問版" : "サドンデス"})`;
   document.getElementById('rank_title').innerHTML = `「${title}」<span style="display:inline-block;">スコアランキング</span>`;

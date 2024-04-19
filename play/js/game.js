@@ -22,14 +22,18 @@ var dead = false;
 
 function unfield_change() {
   if (document.getElementById('username').value.length >= 1) {
-    document.getElementById('button_start1').style = "";
-    document.getElementById('button_start2').style = "";
-    document.getElementById('button_start3').style = "";
+    for (let i = 1; i <= 5; i++){
+      if (document.getElementById(`button_start${i}`) != null) {
+        document.getElementById(`button_start${i}`).style = "";
+      }
+    }
   }
   else {
-    document.getElementsById('button_start1').style = "display:none;";
-    document.getElementsById('button_start2').style = "display:none;";
-    document.getElementsById('button_start3').style = "display:none;";
+    for (let i = 1; i <= 5; i++){
+      if (document.getElementById(`button_start${i}`) != null) {
+        document.getElementById(`button_start${i}`).style = "display:none;";
+      }
+    }
   }
 }
 
@@ -79,7 +83,8 @@ function start_game(k, n) {
     var arr = xhr.response.split('/');
     arr.forEach((item) => {
       item = item.split(' ');
-      data.push({jp: item[0], value:item[1]});
+      if (kind == 'city-coordinates') data.push({jp: item[0], value1:item[1], value2: item[2]});
+      else data.push({jp: item[0], value:item[1]});
     });
     data = shuffleArr(data);
     if (suddendeath == true) mqnum = data.length;
@@ -133,6 +138,10 @@ function set_Q() {
     document.getElementById('snum_0').value = '';
     document.getElementById('snum_1').value = '';
   }
+  else if (kind == 'city-coordinates') {
+    document.getElementById('snum_0').value = '';
+    document.getElementById('snum_1').value = '';
+  }
 
   document.getElementById('answer_field').style = "display:none;";
   document.getElementById('button_next').style = "display:none;";
@@ -140,18 +149,30 @@ function set_Q() {
 }
 
 function judge(){
-  var submit = 0;
+  var submit = 0,submit1 = 0.0,submit2 = 0.0;
 
   /* 種別追加時設定必須 */
   if (false) submit = Number(document.getElementById('snum_0').value) * 100000000 + Number(document.getElementById('snum_1').value) * 10000 + Number(document.getElementById('snum_2').value);
   else if (kind == 'gni' || kind == 'population' || kind == 'manuproval-jp' || kind == 'populcity-jp') submit = Number(document.getElementById('snum_0').value) * 10000 + Number(document.getElementById('snum_1').value);
   else if (kind == 'gnipercap' || kind == 'population-jp') submit = Number(document.getElementById('snum').value);
+  else if (kind == 'city-coordinates') {
+    if (Number(document.getElementById('snum_0').value) == NaN || document.getElementById('snum_0').value == '') submit1 = 999;
+    else submit1 = Number(document.getElementById('snum_0').value);
+    if (Number(document.getElementById('snum_1').value) == NaN || document.getElementById('snum_1').value == '') submit2 = 999;
+    else submit2 = Number(document.getElementById('snum_1').value);
+  }
 
-  if (submit == 0) return;
+  if ((kind != 'city-coordinates' && submit == 0) || (kind == 'city-coordinates' && (submit1 == 999 || submit2 == 999 || Math.abs(submit1) > 90 || Math.abs(submit2) > 180))) return;
 
-  var ans = data[qnum].value;
+  var ans,ans1,ans2;
+  if (kind == 'city-coordinates') {
+    ans1 = data[qnum].value1;
+    ans2 = data[qnum].value2;
+  }
+  else ans = data[qnum].value;
 
   const ans_val = document.getElementById('ans_val');
+  var dist;
 
   /* 種別追加時設定必須 */
   if (kind == 'gni') ans_val.innerHTML = `正解 : <b>` + (ans >= 10000 ? `${Math.floor(ans / 10000)}兆` : "") + `${ans % 10000}億ドル</b>`;
@@ -160,8 +181,13 @@ function judge(){
   else if (kind == 'population-jp') ans_val.innerHTML = `正解 : <b>${ans}万人</b>`;
   else if (kind == 'manuproval-jp') ans_val.innerHTML = `正解 : <b>` + (ans >= 10000 ? `${Math.floor(ans / 10000)}兆` : "") + `${ans % 10000}億円</b>`;
   else if (kind == 'populcity-jp') ans_val.innerHTML = `正解 : <b>` + (ans >= 10000 ? `${Math.floor(ans / 10000)}万` : "") + `${ans % 10000}人</b>`;
+  else if (kind == 'city-coordinates') {
+    ans_val.innerHTML = `正解 : <br><b>緯度 : ${ans1}度<br>経度 : ${ans2}度</b>`;
+    dist = calc_dist(submit1, submit2, ans1, ans2).toFixed(2);
+    document.getElementById('ans_dist').innerHTML = `<b>距離誤差 : ${dist} km</b>`;
+  }
 
-  var s = calc_score(submit, ans);
+  var s = (kind == "city-coordinates" ? calc_score2(dist) : calc_score(submit, ans));
 
   text_cntup(document.getElementById('score'), 0, s, 1, 'スコア : <span style="font-size:30px;color:red;"><b>', ' pts.</b></span>');
   score += s;
@@ -171,9 +197,11 @@ function judge(){
     dead = true;
   }
 
-  detail.push({cname: data[qnum].jp, sub: submit, ans: ans, point: s});
+  if (kind == 'city-coordinates') detail.push({cname: data[qnum].jp, sub1: submit1, sub2: submit2, ans1: ans1, ans2: ans2, point: s, dist: dist});
+  else detail.push({cname: data[qnum].jp, sub: submit, ans: ans, point: s});
 
   document.getElementById('answer_field').style = "";
+  document.getElementById('ans_dist').style = "";
   document.getElementById('button_next').style = "";
   document.getElementById('button_submit').style = "display:none;";
 }
@@ -234,6 +262,9 @@ function result(){
     case 'populcity-jp':
       unit = '人';
       break;
+    case 'city-coordinates':
+      unit = '度';
+      break;
   }
 
   let cnt = 0;
@@ -241,7 +272,8 @@ function result(){
   detail.forEach((item) => {
     var clone = table.cloneNode(true);
     clone.querySelector('#c').innerHTML = item['cname'];
-    clone.querySelector('#s').innerHTML = `${item['sub']}${unit}<br><span style="color:#f00">${item['ans']}${unit}</span>`;
+    if (kind != 'city-coordinates') clone.querySelector('#s').innerHTML = `${item['sub']}${unit}<br><span style="color:#f00">${item['ans']}${unit}</span>`;
+    else clone.querySelector('#s').innerHTML = `${item['sub1']}, ${item['sub2']}<br><span style="color:#f00">${item['ans1']}, ${item['ans2']}</span><br>(${item['dist']} km)`;
     clone.querySelector('#p').innerHTML = `${item['point']} pts.`;
     clone.style = "";
     table.parentNode.appendChild(clone);
@@ -312,6 +344,13 @@ function calc_score(s, a) {
   else return 0;
 }
 
+function calc_score2(d) {
+  if (d == 0) return 5001;
+  else if (d <= 100) return 5000;
+  else if (d <= 10000) return Math.floor(5000 / 9900 * (10000 - d));
+  else return 0;
+}
+
 function text_cntup(text, from, to, duration, prefix, suffix) {
   var max = Math.floor(duration * 60);
   var max_inv = 1 / max / max;
@@ -343,7 +382,7 @@ function text_cntup(text, from, to, duration, prefix, suffix) {
 
 function tweet() {
   /* 種別追加時設定必須 */
-  let kindjp = {gni: "GNI", gnipercap: "一人当たりGNI", population: "国別人口", 'population-jp': "都道府県別人口", 'manuproval-jp': "都道府県別製造業出荷額", 'populcity-jp': "日本の市の人口"};
+  let kindjp = {gni: "GNI", gnipercap: "一人当たりGNI", population: "国別人口", 'population-jp': "都道府県別人口", 'manuproval-jp': "都道府県別製造業出荷額", 'populcity-jp': "日本の市の人口", 'city-coordinates': "主要都市座標"};
 
   let text = `${localStorage.getItem('username')} が「${kindjp[kind]} (${suddendeath ? "サドンデス" : mqnum + "問版"})」で` +
     ` ${score} ${suddendeath ? "問正解" : "pts.を獲得"}！`;
@@ -357,4 +396,22 @@ function tweet() {
   let url = "https://firmianai7z9.github.io/GNIGuesser/index.html";
 
   window.open("https://twitter.com/share?text=" + text + "&hashtags=" + hashtags + "&url=" + url);
+}
+
+function calc_dist(x1,y1,x2,y2) {
+  x1=deg2rad(x1);
+  x2=deg2rad(x2);
+  y1=deg2rad(y1);
+  y2=deg2rad(y2);
+  var RX = 6378.137,RY=6356.752;
+  var p1 = Math.atan(RY / RX * Math.tan(y1));
+  var p2 = Math.atan(RY / RX * Math.tan(y2));
+  var X = Math.acos(Math.sin(p1) * Math.sin(p2) + Math.cos(p1) * Math.cos(p2) * Math.cos(x1 - x2));
+  var F = (RX - RY) / RX;
+  var dr = F/8 * ((Math.sin(X)-X)*Math.pow((Math.sin(p1)+Math.sin(p2)), 2.0)/Math.pow(Math.cos(X/2), 2.0) - (Math.sin(X)+X)*Math.pow((Math.sin(p1)-Math.sin(p2)), 2.0)/Math.pow(Math.sin(X/2), 2.0));
+  return RX * (X + dr);
+}
+
+function deg2rad(d) {
+  return d * Math.PI / 180.0;
 }

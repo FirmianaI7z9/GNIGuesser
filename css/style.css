@@ -1,6 +1,7 @@
 body{width:95%;margin:0 auto;font-family:sans-serif;-webkit-text-size-adjust:100%;}
 
 h1{background-color:#000;color:#fff;padding:10px 20px;border-radius:5px;}
+h1 a{color:#fff;text-decoration:none;}
 h2,p{margin:10px 0;}
 .bo{overflow:hidden;}
 
