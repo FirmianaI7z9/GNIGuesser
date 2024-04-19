@@ -404,9 +404,9 @@ function calc_dist(x1,y1,x2,y2) {
   y1=deg2rad(y1);
   y2=deg2rad(y2);
   var RX = 6378.137,RY=6356.752;
-  var p1 = Math.atan(RY / RX * Math.tan(y1));
-  var p2 = Math.atan(RY / RX * Math.tan(y2));
-  var X = Math.acos(Math.sin(p1) * Math.sin(p2) + Math.cos(p1) * Math.cos(p2) * Math.cos(x1 - x2));
+  var p1 = Math.atan(RY / RX * Math.tan(x1));
+  var p2 = Math.atan(RY / RX * Math.tan(x2));
+  var X = Math.acos(Math.sin(p1) * Math.sin(p2) + Math.cos(p1) * Math.cos(p2) * Math.cos(y1 - y2));
   var F = (RX - RY) / RX;
   var dr = F/8 * ((Math.sin(X)-X)*Math.pow((Math.sin(p1)+Math.sin(p2)), 2.0)/Math.pow(Math.cos(X/2), 2.0) - (Math.sin(X)+X)*Math.pow((Math.sin(p1)-Math.sin(p2)), 2.0)/Math.pow(Math.sin(X/2), 2.0));
   return RX * (X + dr);
